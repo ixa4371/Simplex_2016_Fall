@@ -14,8 +14,9 @@ Date: 2017/05
 
 class Application
 {
-	MyMesh* m_pMesh = nullptr;
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	std::vector<MyMesh*> cubes; // Cubes used in the display
+
+	String m_sProgrammer = "Israel Anthony - ixa4371@rit.edu";
 
 private:
 	static ImGuiObject gui; //GUI object
