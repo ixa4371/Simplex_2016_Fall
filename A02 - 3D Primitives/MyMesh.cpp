@@ -1,4 +1,8 @@
 #include "MyMesh.h"
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 void MyMesh::Init(void)
 {
 	m_bBinded = false;
@@ -275,9 +279,23 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	// Calculate the correct height for displaying at the center
+	float height = a_fHeight * 0.5f;
+
+	// Define central point at both the base level and the tip of the cone
+	vector3 baseCenter(0.0f, -height, 0.0f);
+	vector3 tip(0.0f, height, 0.0f);
+
+	float angle = 2 * M_PI / a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// Draw triangles between the points and the tip 
+		AddTri(vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius), tip, vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius));
+
+		// Draw triangles between the points and the baseCenter
+		AddTri(vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius), baseCenter, vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -299,9 +317,26 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	// Calculate the correct height for displaying at the center
+	float height = a_fHeight * 0.5f;
+
+	// Define central point at both the base level and the tip of the cone
+	vector3 baseCenter(0.0f, -height, 0.0f);
+	vector3 topCenter(0.0f, height, 0.0f);
+
+	float angle = 2 * M_PI / a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// Draw triangles between the top points and the topCenter 
+		AddTri(vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius), topCenter, vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius));
+
+		// Draw quads between top points and bottom points
+		//AddQuad();
+
+		// Draw triangles between the bottom points and the baseCenter
+		AddTri(vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius), baseCenter, vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
