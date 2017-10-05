@@ -286,6 +286,7 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	vector3 baseCenter(0.0f, -height, 0.0f);
 	vector3 tip(0.0f, height, 0.0f);
 
+	// Calculate the angle used to generate the points along the edges of the base of the cone
 	float angle = 2 * M_PI / a_nSubdivisions;
 
 	for (int i = 0; i < a_nSubdivisions; i++)
@@ -324,15 +325,16 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	vector3 baseCenter(0.0f, -height, 0.0f);
 	vector3 topCenter(0.0f, height, 0.0f);
 
+	// Calculate the angle used to generate the points along the edges of the cylinder
 	float angle = 2 * M_PI / a_nSubdivisions;
 
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		// Draw triangles between the top points and the topCenter 
-		AddTri(vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius), topCenter, vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius));
+		AddTri(vector3(cos(angle * i) * a_fRadius, height, sin(angle * i) * a_fRadius), topCenter, vector3(cos(angle * (i + 1)) * a_fRadius, height, sin(angle * (i + 1)) * a_fRadius));
 
 		// Draw quads between top points and bottom points
-		//AddQuad();
+		AddQuad(vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius), vector3(cos(angle * i) * a_fRadius, height, sin(angle * i) * a_fRadius), vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius), vector3(cos(angle * (i + 1)) * a_fRadius, height, sin(angle * (i + 1)) * a_fRadius));
 
 		// Draw triangles between the bottom points and the baseCenter
 		AddTri(vector3(cos(angle * (i + 1)) * a_fRadius, -height, sin(angle * (i + 1)) * a_fRadius), baseCenter, vector3(cos(angle * i) * a_fRadius, -height, sin(angle * i) * a_fRadius));
@@ -364,9 +366,26 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	// Calculate the correct height for displaying at the center
+	float height = a_fHeight * 0.5f;
+
+	// Calculate the angle used to generate the points along the inner and outer edges of the tube
+	float angle = 2 * M_PI / a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// Draw quads between top points and bottom points on the inner radius
+		AddQuad(vector3(cos(angle * i) * a_fInnerRadius, height, sin(angle * i) * a_fInnerRadius), vector3(cos(angle * i) * a_fInnerRadius, -height, sin(angle * i) * a_fInnerRadius), vector3(cos(angle * (i + 1)) * a_fInnerRadius, height, sin(angle * (i + 1)) * a_fInnerRadius), vector3(cos(angle * (i + 1)) * a_fInnerRadius, -height, sin(angle * (i + 1)) * a_fInnerRadius));
+
+		// Draw quads between top points and bottom points on the outer radius
+		AddQuad(vector3(cos(angle * i) * a_fOuterRadius, -height, sin(angle * i) * a_fOuterRadius), vector3(cos(angle * i) * a_fOuterRadius, height, sin(angle * i) * a_fOuterRadius), vector3(cos(angle * (i + 1)) * a_fOuterRadius, -height, sin(angle * (i + 1)) * a_fOuterRadius), vector3(cos(angle * (i + 1)) * a_fOuterRadius, height, sin(angle * (i + 1)) * a_fOuterRadius));
+
+		// Draw quads between the two sets of bottom points
+		AddQuad(vector3(cos(angle * i) * a_fInnerRadius, -height, sin(angle * i) * a_fInnerRadius), vector3(cos(angle * i) * a_fOuterRadius, -height, sin(angle * i) * a_fOuterRadius), vector3(cos(angle * (i + 1)) * a_fInnerRadius, -height, sin(angle * (i + 1)) * a_fInnerRadius), vector3(cos(angle * (i + 1)) * a_fOuterRadius, -height, sin(angle * (i + 1)) * a_fOuterRadius));
+
+		// Draw quads between the two sets of top points
+		AddQuad(vector3(cos(angle * i) * a_fOuterRadius, height, sin(angle * i) * a_fOuterRadius), vector3(cos(angle * i) * a_fInnerRadius, height, sin(angle * i) * a_fInnerRadius), vector3(cos(angle * (i + 1)) * a_fOuterRadius, height, sin(angle * (i + 1)) * a_fOuterRadius), vector3(cos(angle * (i + 1)) * a_fInnerRadius, height, sin(angle * (i + 1)) * a_fInnerRadius));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -415,15 +434,37 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		GenerateCube(a_fRadius * 2.0f, a_v3Color);
 		return;
 	}
+
+	// Removed limit on subdivisions for testing. 
 	if (a_nSubdivisions > 6)
-		a_nSubdivisions = 6;
+		//a_nSubdivisions = 6;
 
 	Release();
 	Init();
+	
+	// Draws the quads of the sphere one horizontal subdivision at a time
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// Calculates the horizontal angles used in generating the points across one horizontal subdivision in the circle
+		float horizontalAngle1 = 2 * M_PI / a_nSubdivisions * i;
+		float horizontalAngle2 = 2 * M_PI / a_nSubdivisions * (i + 1);
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+		for (int j = 0; j < a_nSubdivisions; j++)
+		{
+			// Calculates the vertical angles used in generating the points across one horizontal subdivision in the circle
+			float verticalAngle1 = M_PI / a_nSubdivisions * j;
+			float verticalAngle2 = M_PI / a_nSubdivisions * (j + 1);
+
+			vector3 point1(a_fRadius * cos(horizontalAngle1) * sin(verticalAngle1), a_fRadius * sin(horizontalAngle1) * sin(verticalAngle1), a_fRadius * cos(verticalAngle1));
+			vector3 point2(a_fRadius * cos(horizontalAngle1) * sin(verticalAngle2), a_fRadius * sin(horizontalAngle1) * sin(verticalAngle2), a_fRadius * cos(verticalAngle2));
+
+			vector3 point3(a_fRadius * cos(horizontalAngle2) * sin(verticalAngle1), a_fRadius * sin(horizontalAngle2) * sin(verticalAngle1), a_fRadius * cos(verticalAngle1));
+			vector3 point4(a_fRadius * cos(horizontalAngle2) * sin(verticalAngle2), a_fRadius * sin(horizontalAngle2) * sin(verticalAngle2), a_fRadius * cos(verticalAngle2));
+
+			AddQuad(point1, point2, point3, point4);
+		}
+	}
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
