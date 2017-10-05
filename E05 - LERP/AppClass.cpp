@@ -16,17 +16,17 @@ void Application::InitVariables(void)
 	m_stopsList.push_back(vector3(-4.0f, -2.0f, 5.0f));
 	m_stopsList.push_back(vector3(1.0f, -2.0f, 5.0f));
 
-	m_stopsList.push_back(vector3(-3.0f, -1.0f, 3.0f));
-	m_stopsList.push_back(vector3(2.0f, -1.0f, 3.0f));
-
-	m_stopsList.push_back(vector3(-2.0f, 0.0f, 0.0f));
-	m_stopsList.push_back(vector3(3.0f, 0.0f, 0.0f));
-
-	m_stopsList.push_back(vector3(-1.0f, 1.0f, -3.0f));
-	m_stopsList.push_back(vector3(4.0f, 1.0f, -3.0f));
-
-	m_stopsList.push_back(vector3(0.0f, 2.0f, -5.0f));
-	m_stopsList.push_back(vector3(5.0f, 2.0f, -5.0f));
+	//m_stopsList.push_back(vector3(-3.0f, -1.0f, 3.0f));
+	//m_stopsList.push_back(vector3(2.0f, -1.0f, 3.0f));
+	//
+	//m_stopsList.push_back(vector3(-2.0f, 0.0f, 0.0f));
+	//m_stopsList.push_back(vector3(3.0f, 0.0f, 0.0f));
+	//
+	//m_stopsList.push_back(vector3(-1.0f, 1.0f, -3.0f));
+	//m_stopsList.push_back(vector3(4.0f, 1.0f, -3.0f));
+	//
+	//m_stopsList.push_back(vector3(0.0f, 2.0f, -5.0f));
+	//m_stopsList.push_back(vector3(5.0f, 2.0f, -5.0f));
 
 	m_stopsList.push_back(vector3(1.0f, 3.0f, -5.0f));
 }
@@ -57,12 +57,27 @@ void Application::Display(void)
 	//calculate the current position
 	vector3 v3CurrentPos;
 	
-
-
-
-
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+	// Determine the current path's beginning and end
+	static uint currentStop = 0;
+	vector3 start = m_stopsList[currentStop];
+	vector3 end = m_stopsList[(currentStop + 1) % m_stopsList.size()];
+	 
+	// Calculate fPercentage by mapping it form a larger scale to the scale between 0.0 and 1.0
+	float fPercentage = MapValue(fTimer, 0.0f, 3.0f, 0.0f, 1.0f);
+
+	v3CurrentPos = glm::lerp(start, end, fPercentage);
+	
+	// When fPercentage reaches 1.0 (maximum), reset the start and end points of the path and restart the timer
+	if (fPercentage >= 1.0f)
+	{
+		currentStop++; 
+		fTimer = m_pSystem->GetDeltaTime(uClock);
+
+		// Reset currentStop to make sure that we don't access non-existing indecies in the m_stopsList vector
+		currentStop %= m_stopsList.size();
+	}
+
 	//-------------------
 	
 	
