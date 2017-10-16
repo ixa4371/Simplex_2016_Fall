@@ -1,7 +1,3 @@
-/*----------------------------------------------
-Programmer: Alberto Bobadilla (labigm@gmail.com)
-Date: 2017/05
-----------------------------------------------*/
 #ifndef __APPLICATIONCLASS_H_
 #define __APPLICATIONCLASS_H_
 
@@ -16,11 +12,17 @@ Date: 2017/05
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 class Application
 {
 	uint m_uOrbits = 0; //number of shapes starting at 3 and increasing in sides
 	std::vector<uint> m_shapeList; //shape index for circles
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	std::vector<std::vector<vector3>> stops; // a vector holding all of the verticies of the polygons that are being traced by the spheres
+	std::vector<uint> currentStops; // used to determine when to restart from the first vertex
+	
+	String m_sProgrammer = "Israel Anthony - ixa4371@rit.edu";
 	
 private:
 	static ImGuiObject gui; //GUI object
