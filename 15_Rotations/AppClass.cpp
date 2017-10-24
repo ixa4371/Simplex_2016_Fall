@@ -35,16 +35,18 @@ void Application::Display(void)
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix(); //Projection Matrix
 	
 
-	//calculate the current position
+	//calculate the current position using euler angles
 	//m_v3Rotation = vector3(0.0f, 0.0f, 0.0f);
-	matrix4 m4RotX = glm::rotate(IDENTITY_M4, m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
-	matrix4 m4RotY = glm::rotate(IDENTITY_M4, m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
-	matrix4 m4RotZ = glm::rotate(IDENTITY_M4, m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
-	matrix4 m4Model = m4RotX * m4RotZ * m4RotY;
+	//matrix4 m4RotX = glm::rotate(IDENTITY_M4, m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
+	//matrix4 m4RotY = glm::rotate(IDENTITY_M4, m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
+	//matrix4 m4RotZ = glm::rotate(IDENTITY_M4, m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
+	//matrix4 m4Model = m4RotX * m4RotZ * m4RotY;
 	
-	//quaternion q1 = glm::angleAxis(45.0f, vector3(1.0f, 0.0f, 0.0f));
-	//m4Model = ToMatrix4(q1); // same as m4Model = glm::mat4_cast(q1);
-	
+	//calculate the current position using quaternions
+	quaternion q1 = glm::angleAxis(m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
+	quaternion q2 = glm::angleAxis(m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
+	quaternion q3 = glm::angleAxis(m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
+	matrix4 m4Model = ToMatrix4(q1 * q2 * q3); // same as m4Model = glm::mat4_cast(q1);
 
 	/*
 	//extra part, how to rotate around a point (in this case the base of the cone)
