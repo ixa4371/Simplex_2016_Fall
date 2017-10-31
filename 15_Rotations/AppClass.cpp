@@ -40,14 +40,9 @@ void Application::Display(void)
 	//matrix4 m4RotX = glm::rotate(IDENTITY_M4, m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
 	//matrix4 m4RotY = glm::rotate(IDENTITY_M4, m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
 	//matrix4 m4RotZ = glm::rotate(IDENTITY_M4, m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
-	//matrix4 m4Model = m4RotX * m4RotZ * m4RotY;
-	
-	//calculate the current position using quaternions
-	quaternion q1 = glm::angleAxis(m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
-	quaternion q2 = glm::angleAxis(m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
-	quaternion q3 = glm::angleAxis(m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
-	matrix4 m4Model = ToMatrix4(q1 * q2 * q3); // same as m4Model = glm::mat4_cast(q1);
+	//matrix4 m4Model = m4RotX * m4RotZ * m4RotY; same as m4Model = glm::mat4_cast(q1);
 
+	matrix4 m4Model = glm::mat4_cast(rotation);
 	/*
 	//extra part, how to rotate around a point (in this case the base of the cone)
 	matrix4 m4Translation = glm::translate(IDENTITY_M4, vector3(0.0f, 0.5f, 0.0f));

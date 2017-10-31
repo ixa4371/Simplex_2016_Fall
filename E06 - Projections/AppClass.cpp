@@ -3,7 +3,7 @@ using namespace Simplex;
 void Application::InitVariables(void)
 {
 	////Change this to your name and email
-	//m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	//m_sProgrammer = "Israel Anthony - ixa4371@rit.edu";
 
 	////Alberto needed this at this position for software recording.
 	//m_pWindow->setPosition(sf::Vector2i(710, 0));
@@ -57,21 +57,39 @@ void Application::Display(void)
 		break;
 	case 2:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false); // Make the camera orthographic
 		break;
 	case 3:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false);
+
+		// Set the position, target view, and up axis
+		m_pCamera->SetPositionTargetAndUp(vector3(10.0f, 0.0f, -0.2f), vector3(0.0f,0.0f,-1.2f), vector3(0.0f, 0.0f, -1.0f));
+		
+		// Increase what is shown from the scene by setting horizontal and vertical planes
+		m_pCamera->SetHorizontalPlanes(vector2(-15.0f, 15.0f));
+		m_pCamera->SetVerticalPlanes(vector2(-15.0f, 15.0f));
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f)); // Move the camera to opposite side of shapes
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+		// Move the camera position and use nearfar to exclude the blue cone
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f)); 
+		m_pCamera->SetNearFar(vector2(5.0f, 15.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+		// Move the camera position and use nearfar to exclude the red torus
+		m_pCamera->SetPosition(vector3(0.0f, 0.0f, -15.0f));
+		m_pCamera->SetNearFar(vector2(4.0f, 10.0f));
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+		// Set the vertical axis to be the -y direction (make it upside down)
+		m_pCamera->SetUp(vector3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 

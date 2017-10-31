@@ -428,6 +428,9 @@ void Application::ProcessKeyboard(void)
 		{
 			m_v3Rotation.x += 1.0f;
 		}
+
+		glm::quat axis = glm::angleAxis(1.0f, vector3(1.0f, 0.0f, 0.0f));
+		rotation = rotation * axis;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
@@ -440,6 +443,9 @@ void Application::ProcessKeyboard(void)
 		{
 			m_v3Rotation.y += 1.0f;
 		}
+
+		glm::quat axis = glm::angleAxis(1.0f, vector3(0.0f, 1.0f, 0.0f));
+		rotation = rotation * axis;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
@@ -452,6 +458,9 @@ void Application::ProcessKeyboard(void)
 		{
 			m_v3Rotation.z += 1.0f;
 		}
+
+		glm::quat axis = glm::angleAxis(1.0f, vector3(0.0f, 0.0f, 1.0f));
+		rotation = rotation * axis;
 	}
 }
 

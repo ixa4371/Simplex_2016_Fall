@@ -14,9 +14,10 @@ Date: 2017/05
 
 class Application
 {
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	String m_sProgrammer = "Israel Anthony - ixa4371@rit.edu";
 	MyMesh* m_pMesh = nullptr;
 	vector3 m_v3Rotation = vector3(0.0f, 0.0f, 0.0f);
+	glm::quat rotation;
 
 private:
 	static ImGuiObject gui; //GUI object
