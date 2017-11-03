@@ -385,6 +385,26 @@ void Application::ProcessKeyboard(void)
 
 	if (fMultiplier)
 		fSpeed *= 5.0f;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		m_pCamera->MoveForward(fSpeed);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		m_pCamera->MoveForward(-fSpeed);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		m_pCamera->MoveSideways(-fSpeed);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		m_pCamera->MoveSideways(fSpeed);
+	}
 #pragma endregion
 }
 //Joystick
@@ -412,6 +432,7 @@ void Application::ProcessJoystick(void)
 #pragma endregion
 #pragma region Camera Orientation
 	//Change the Yaw and the Pitch of the camera
+
 #pragma endregion
 #pragma region ModelOrientation Orientation
 	m_qArcBall = quaternion(vector3(glm::radians(m_pController[m_uActCont]->axis[SimplexAxis_POVY] / 20.0f), 0.0f, 0.0f)) * m_qArcBall;

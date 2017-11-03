@@ -154,3 +154,28 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 										m_v2NearFar.x, m_v2NearFar.y); //near and far
 	}
 }
+
+void Simplex::MyCamera::MoveForward(float a_fSpeed)
+{
+	m_v3Position += m_v3Forward * a_fSpeed;
+	m_v3Target += m_v3Forward * a_fSpeed;
+	m_v3Up += m_v3Forward * a_fSpeed;
+
+	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+	m_v3Upward = glm::normalize(m_v3Up - m_v3Position);
+	m_v3Side = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
+	m_v3Up = vector3(0.0f, 1.0f, 0.0f);
+}
+
+void Simplex::MyCamera::MoveSideways(float a_fSpeed)
+{
+	// Apply the movement to the Position, Target, and Up vectors
+	m_v3Position += m_v3Side * a_fSpeed;
+	m_v3Target += m_v3Side * a_fSpeed;
+	m_v3Up += m_v3Side * a_fSpeed;
+
+	// Update the Forward, Upward, Side vectors to be correct in the new positions
+	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+	m_v3Upward = glm::normalize(m_v3Up - m_v3Position);
+	m_v3Side = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
+}
