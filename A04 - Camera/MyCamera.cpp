@@ -33,6 +33,9 @@ Simplex::MyCamera::MyCamera(vector3 a_v3Position, vector3 a_v3Target, vector3 a_
 {
 	Init(); //Initialize the object
 	SetPositionTargetAndUp(a_v3Position, a_v3Target, a_v3Upward); //set the position, target and up
+
+	// Setting the top,
+
 }
 
 Simplex::MyCamera::MyCamera(MyCamera const& other)
@@ -130,13 +133,26 @@ void Simplex::MyCamera::SetPositionTargetAndUp(vector3 a_v3Position, vector3 a_v
 	m_v3Position = a_v3Position;
 	m_v3Target = a_v3Target;
 	m_v3Up = a_v3Position + a_v3Upward;
+
+	m_v3Upward = a_v3Position + m_v3Up;
+	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
+
 	CalculateProjectionMatrix();
 }
 
 void Simplex::MyCamera::CalculateViewMatrix(void)
 {
 	//Calculate the look at
-	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Up);
+	m_m4View = glm::lookAt(m_v3Position, m_v3Target, m_v3Upward);
+
+	// Get pitch and yaw from the pitchYaw to calculate the proper rotation matricies 
+	matrix4 pitchMatrix = glm::rotate(IDENTITY_M4, pitchYaw.x, AXIS_X);
+	matrix4 yawMatrix = glm::rotate(IDENTITY_M4, pitchYaw.y, AXIS_Y);
+	matrix4 rotation = pitchMatrix * yawMatrix; //combine both rotations into one M4
+
+	matrix4 translation = glm::translate(IDENTITY_M4, -1.0f * m_v3Target);
+	m_m4View = rotation * translation;
 }
 
 void Simplex::MyCamera::CalculateProjectionMatrix(void)
@@ -157,25 +173,51 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 
 void Simplex::MyCamera::MoveForward(float a_fSpeed)
 {
+	// Apply the movement to the Position, Target, and Up vectors
 	m_v3Position += m_v3Forward * a_fSpeed;
 	m_v3Target += m_v3Forward * a_fSpeed;
 	m_v3Up += m_v3Forward * a_fSpeed;
 
+	// Update the Forward, Upward, Side vectors to be correct in the new positions
 	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
 	m_v3Upward = glm::normalize(m_v3Up - m_v3Position);
-	m_v3Side = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
-	m_v3Up = vector3(0.0f, 1.0f, 0.0f);
+	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
+
+	CalculateProjectionMatrix();
 }
 
 void Simplex::MyCamera::MoveSideways(float a_fSpeed)
 {
 	// Apply the movement to the Position, Target, and Up vectors
-	m_v3Position += m_v3Side * a_fSpeed;
-	m_v3Target += m_v3Side * a_fSpeed;
-	m_v3Up += m_v3Side * a_fSpeed;
+	m_v3Position += m_v3Right * a_fSpeed;
+	m_v3Target += m_v3Right * a_fSpeed;
+	m_v3Up += m_v3Right * a_fSpeed;
 
 	// Update the Forward, Upward, Side vectors to be correct in the new positions
 	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
 	m_v3Upward = glm::normalize(m_v3Up - m_v3Position);
-	m_v3Side = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
+	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Upward));
+
+	CalculateProjectionMatrix();
 }
+
+void Simplex::MyCamera::ChangeYaw(float a_fAngle)
+{
+	float radians = glm::radians(a_fAngle);
+	m_v3Forward = glm::normalize(m_v3Forward * glm::cos(radians) - glm::sin(radians));
+	m_v3Right = glm::cross(m_v3Forward, m_v3Up);
+
+	// Update the pitchYaw vector2
+	pitchYaw.y = radians;
+}
+
+void Simplex::MyCamera::ChangePitch(float a_fAngle)
+{
+	float radians = glm::radians(a_fAngle);
+	m_v3Forward = glm::normalize(m_v3Forward * glm::cos(radians) + m_v3Up * glm::sin(radians));
+	m_v3Upward = glm::cross(m_v3Forward, m_v3Right);
+
+	// Update the pitchYaw vector2
+	pitchYaw.x = radians;
+}
+

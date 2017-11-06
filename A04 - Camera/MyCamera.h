@@ -17,9 +17,10 @@ class MyCamera
 	vector3 m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
 
-	vector3 m_v3Forward = vector3(0.0f, 0.0f, 1.0f);
-	vector3 m_v3Side = vector3(1.0f, 0.0f, 0.0f);
+	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
+	vector3 m_v3Right = vector3(1.0f, 0.0f, 0.0f);
 	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
+	vector2 pitchYaw = vector2();
 
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
@@ -33,6 +34,7 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+
 public:
 	/*
 	USAGE: Constructor
@@ -217,9 +219,24 @@ public:
 	*/
 	void CalculateProjectionMatrix(void);
 
+	/*
+	USAGE: Moves the camera forward and backward
+	ARGUMENTS: 
+	-	float a_fSpeed -> The speed/distance that the camera moves
+	OUTPUT: ---
+	*/
 	void MoveForward(float a_fSpeed);
+
+	/*
+	USAGE: Move the camera sideways (left or right)
+	ARGUMENTS: 
+	-	float a_fSpeed -> The speed/distance that the camera moves
+	OUTPUT: ---
+	*/
 	void MoveSideways(float a_fSpeed);
-	void MoveVertical(float a_fSpeed);
+
+	void ChangeYaw(float a_fAngle);
+	void ChangePitch(float a_fAngle);
 };
 
 } //namespace Simplex
