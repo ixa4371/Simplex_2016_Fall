@@ -16,11 +16,12 @@ class MyCamera
 	vector3 m_v3Target = vector3(0.0f, 0.0f, 0.0f); //What I'm looking at
 	vector3 m_v3Up = vector3(0.0f, 1.0f, 0.0f); //What is up
 
-
+	// New variables
 	vector3 m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
 	vector3 m_v3Right = vector3(1.0f, 0.0f, 0.0f);
 	vector3 m_v3Upward = vector3(0.0f, 1.0f, 0.0f);
-	vector2 pitchYaw = vector2();
+	glm::quat xRotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::quat yRotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 
 	bool m_bPerspective = true; //perspective view? False is Orthographic
 
@@ -235,8 +236,14 @@ public:
 	*/
 	void MoveSideways(float a_fSpeed);
 
-	void ChangeYaw(float a_fAngle);
-	void ChangePitch(float a_fAngle);
+	/*
+	USAGE:
+	ARGUMENTS: 
+	-	float a_fAngleX -> The angle used in calculating x rotation
+	-	float a_fAngleY -> The angle used in calculating y rotation
+	OUTPUT: ---
+	*/
+	void ChangePitchYaw(float a_fAngleX, float a_fAngleY);
 };
 
 } //namespace Simplex
