@@ -85,8 +85,46 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 	
 	//your code goes here---------------------
-	m_v3MinG = m_v3MinL;
-	m_v3MaxG = m_v3MaxL;
+	
+	// Calculate the corners of the local Axis (Re)Aligned Bounding Box
+	vector3 arbbCorners[8]; // array of 8 vector3's to hold the individual coordinates for all 8 corners in the box(cube)
+
+	// Corners for the back face of the cube (coordinates)
+	arbbCorners[0] = m_v3MinL;
+	arbbCorners[1] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
+	arbbCorners[2] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z);
+	arbbCorners[3] = vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z);
+
+	// Corners for the front face of the cube (coordinates)
+	arbbCorners[4] = vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z);
+	arbbCorners[5] = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z);
+	arbbCorners[6] = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
+	arbbCorners[7] = m_v3MaxL;
+
+	// Take the coordinates we just got for local space and translate them into global space
+	for (uint i = 0; i < 8; i++)
+	{
+		arbbCorners[i] = vector3(m_m4ToWorld * vector4(arbbCorners[i], 1.0f));
+	}
+
+	// Reset the Max and Min to be the first corner (before calculating the new Max and Min coordinates)
+	m_v3MaxG = arbbCorners[0];
+	m_v3MinG = arbbCorners[0];
+
+
+	// Calculate the new Max and Min coordinates
+	for (uint i = 1; i < 8; ++i)
+	{
+		if (m_v3MaxG.x < arbbCorners[i].x) m_v3MaxG.x = arbbCorners[i].x;
+		else if (m_v3MinG.x > arbbCorners[i].x) m_v3MinG.x = arbbCorners[i].x;
+
+		if (m_v3MaxG.y < arbbCorners[i].y) m_v3MaxG.y = arbbCorners[i].y;
+		else if (m_v3MinG.y > arbbCorners[i].y) m_v3MinG.y = arbbCorners[i].y;
+
+		if (m_v3MaxG.z < arbbCorners[i].z) m_v3MaxG.z = arbbCorners[i].z;
+		else if (m_v3MinG.z > arbbCorners[i].z) m_v3MinG.z = arbbCorners[i].z;
+	}
+
 	//----------------------------------------
 
 	//we calculate the distance between min and max vectors
