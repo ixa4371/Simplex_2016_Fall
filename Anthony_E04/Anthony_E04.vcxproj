@@ -14,7 +14,7 @@
     <ProjectGuid>{6109EA4D-8758-414B-8906-F200E80B0CC0}</ProjectGuid>
     <RootNamespace>Anthony_E04</RootNamespace>
     <ProjectName>Anthony_E04</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
